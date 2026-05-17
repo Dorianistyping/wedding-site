@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloom | Services — Bespoke Wedding Planning</title>
+  <meta name="description" content="Full-service luxury wedding planning, design, venue sourcing, and coordination. Bloom creates bespoke celebrations anywhere you dream.">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --pure-white: #FFFFFF;
+      --off-white: #F8F8F8;
+      --light-gray: #EBEBEB;
+      --mid-gray: #A0A0A0;
+      --dark-gray: #333333;
+      --near-black: #0A0A0A;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--pure-white);
+      color: var(--near-black);
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; font-weight: 500; letter-spacing: 0.01em; }
+    .presentation-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    .slide {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .slide-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 6%;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .slide.active .slide-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .nav-dots {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mid-gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-dot.active { background: var(--near-black); transform: scale(1.5); }
+    .btn-bloom {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--near-black);
+      padding: 0.9rem 2.2rem;
+      color: var(--near-black);
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn-bloom::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--near-black);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+    .btn-bloom:hover::before { left: 0; }
+    .btn-bloom:hover { color: var(--pure-white); }
+    .btn-bloom-solid { background: var(--near-black); border: none; color: var(--pure-white); }
+    .btn-bloom-solid::before { display: none; }
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 6%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--near-black);
+      text-decoration: none;
+    }
+    .logo span { font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      color: var(--dark-gray);
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--near-black);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a:hover, .nav-links a.active { color: var(--near-black); }
+    .menu-icon { display: none; font-size: 1.5rem; cursor: pointer; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .service-card {
+      background: var(--pure-white);
+      border: 1px solid var(--light-gray);
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .service-card i { font-size: 2rem; color: var(--near-black); margin-bottom: 1rem; }
+    .service-card h3 { font-size: 1.5rem; margin-bottom: 0.7rem; }
+    .service-card p { color: var(--dark-gray); font-size: 0.85rem; font-weight: 300; }
+    .section-title { font-size: 2.8rem; text-align: center; margin-bottom: 0.5rem; }
+    .section-sub { text-align: center; margin-bottom: 2rem; color: var(--mid-gray); font-weight: 300; max-width: 650px; margin-left: auto; margin-right: auto; }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .step { text-align: center; background: var(--off-white); padding: 1.5rem; border: 1px solid var(--light-gray); transition: all 0.3s ease; }
+    .step:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .step .number {
+      width: 50px;
+      height: 50px;
+      background: var(--near-black);
+      color: var(--pure-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin: 0 auto 1rem;
+    }
+    footer {
+      background: var(--near-black);
+      color: var(--mid-gray);
+      padding: 2rem 6%;
+      text-align: center;
+      font-size: 0.7rem;
+    }
+    .social-icons a { color: var(--mid-gray); margin: 0 14px; transition: color 0.3s; display: inline-block; }
+    .social-icons a:hover { color: var(--pure-white); transform: translateY(-3px); }
+    @media (max-width: 850px) {
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        background: var(--pure-white);
+        flex-direction: column;
+        width: 70%;
+        height: 100vh;
+        padding: 2rem;
+        transition: left 0.3s;
+        border-right: 1px solid var(--light-gray);
+      }
+      .nav-links.active { left: 0; }
+      .menu-icon { display: block; }
+      .section-title { font-size: 2.2rem; }
+      .nav-dots { right: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="logo">Bloom<span>.</span></a>
+  <div class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html" class="active">Services</a></li>
+    <li><a href="venues.html">Venues</a></li>
+    <li><a href="index.html#contact">Inquire</a></li>
+  </ul>
+</nav>
+
+<div class="presentation-container" id="presentationContainer">
+  <section class="slide" data-slide-index="0" style="background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.5)), url('https://images.pexels.com/photos/1024996/pexels-photo-1024996.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover; color: var(--pure-white);">
+    <div class="slide-content" style="text-align: center;">
+      <h1 style="font-size: 3.5rem; margin-bottom: 0.5rem;">Our Services</h1>
+      <p style="font-size: 1rem;">Tailored planning · design · coordination — from proposal to final dance</p>
+    </div>
+  </section>
+
+  <section class="slide" data-slide-index="1" style="background: var(--pure-white);">
+    <div class="slide-content">
+      <h2 class="section-title">What We Offer</h2>
+      <div class="section-sub">Comprehensive planning for every aspect of your celebration</div>
+      <div class="services-grid">
+        <div class="service-card"><i class="far fa-compass"></i><h3>Concept & Design</h3><p>Mood boards, color palettes, and bespoke stationery that tell your story.</p></div>
+        <div class="service-card"><i class="fas fa-map-marker-alt"></i><h3>Venue Sourcing</h3><p>No fixed inventory — we find the perfect location for you.</p></div>
+        <div class="service-card"><i class="far fa-calendar-check"></i><h3>Full Coordination</h3><p>Vendor management, timelines, and flawless execution.</p></div>
+        <div class="service-card"><i class="fas fa-globe"></i><h3>Destination Weddings</h3><p>Global logistics and local partnerships anywhere you choose.</p></div>
+        <div class="service-card"><i class="fas fa-utensils"></i><h3>Banquet Curation</h3><p>Renowned chefs and exceptional culinary experiences.</p></div>
+        <div class="service-card"><i class="fas fa-palette"></i><h3>Aesthetic Direction</h3><p>Floral narratives, lighting, and spatial design.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide-index="2" style="background: var(--off-white);">
+    <div class="slide-content">
+      <h2 class="section-title">Our Process</h2>
+      <div class="section-sub">A structured collaboration from vision to reality</div>
+      <div class="process-steps">
+        <div class="step"><div class="number">01</div><h3>Discovery</h3><p>We listen to your priorities and aspirations.</p></div>
+        <div class="step"><div class="number">02</div><h3>Curating</h3><p>Venue search, vendor selection, design development.</p></div>
+        <div class="step"><div class="number">03</div><h3>Orchestrating</h3><p>Budget oversight, timeline management, negotiations.</p></div>
+        <div class="step"><div class="number">04</div><h3>Realizing</h3><p>Flawless execution — you savor every moment.</p></div>
+      </div>
+      <div style="text-align: center; margin-top: 2.5rem;">
+        <a href="index.html#contact" class="btn-bloom btn-bloom-solid">Request a proposal →</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="social-icons"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-pinterest"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a></div>
+  <p style="margin-top: 1rem;">© 2025 Bloom Weddings — Bespoke Planning & Curation</p>
+</footer>
+
+<script>
+  const container = document.getElementById('presentationContainer');
+  const slides = document.querySelectorAll('.slide');
+  const navDotsContainer = document.createElement('div');
+  navDotsContainer.className = 'nav-dots';
+  document.body.appendChild(navDotsContainer);
+  let currentSlide = 0;
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot';
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => {
+      container.scrollTo({ top: i * window.innerHeight, behavior: 'smooth' });
+    });
+    navDotsContainer.appendChild(dot);
+  });
+  const dots = document.querySelectorAll('.nav-dot');
+  function updateActive() {
+    const scrollPos = container.scrollTop;
+    const slideHeight = window.innerHeight;
+    const newSlide = Math.round(scrollPos / slideHeight);
+    if (newSlide !== currentSlide) {
+      currentSlide = newSlide;
+      slides.forEach((s, i) => {
+        if (i === currentSlide) s.classList.add('active');
+        else s.classList.remove('active');
+      });
+      dots.forEach((d, i) => {
+        if (i === currentSlide) d.classList.add('active');
+        else d.classList.remove('active');
+      });
+    }
+  }
+  container.addEventListener('scroll', () => requestAnimationFrame(updateActive));
+  slides[0].classList.add('active');
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('navLinks');
+  if(toggle) toggle.addEventListener('click', () => nav.classList.toggle('active'));
+  document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => nav.classList.remove('active')));
+</script>
+</body>
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Bloom | Bespoke Wedding Planning & Venue Curation</title>
+  <meta name="description" content="Bloom crafts bespoke luxury weddings anywhere you dream. Full planning, design, and venue curation — tailored entirely to your love story.">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --pure-white: #FFFFFF;
+      --off-white: #F8F8F8;
+      --light-gray: #EBEBEB;
+      --mid-gray: #A0A0A0;
+      --dark-gray: #333333;
+      --near-black: #0A0A0A;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--pure-white);
+      color: var(--near-black);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .serif {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    /* Presentation Scroll Container */
+    .presentation-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    /* Each Slide */
+    .slide {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Slide Content Container */
+    .slide-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 6%;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 2;
+    }
+
+    .slide.active .slide-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Video Background Slides */
+    .video-bg-slide {
+      position: relative;
+    }
+
+    .video-bg-slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+
+    .bg-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    /* Full Video Slide (no overlay, no text) */
+    .full-video-slide {
+      position: relative;
+    }
+
+    .full-video-slide .bg-video {
+      z-index: 0;
+    }
+
+    /* Navigation Dots */
+    .nav-dots {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mid-gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-dot.active {
+      background: var(--near-black);
+      transform: scale(1.5);
+    }
+
+    .nav-dot:hover {
+      background: var(--near-black);
+      transform: scale(1.2);
+    }
+
+    /* Buttons */
+    .btn-bloom {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--near-black);
+      padding: 0.9rem 2.2rem;
+      color: var(--near-black);
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .btn-bloom::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--near-black);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+
+    .btn-bloom:hover::before {
+      left: 0;
+    }
+
+    .btn-bloom:hover {
+      color: var(--pure-white);
+      border-color: var(--near-black);
+    }
+
+    .btn-bloom-solid {
+      background: var(--near-black);
+      border: none;
+      color: var(--pure-white);
+    }
+
+    .btn-bloom-solid:hover {
+      background: var(--dark-gray);
+      transform: translateY(-2px);
+    }
+
+    .btn-bloom-solid::before {
+      display: none;
+    }
+
+    .btn-white {
+      border-color: var(--pure-white);
+      color: var(--pure-white);
+    }
+
+    .btn-white::before {
+      background: var(--pure-white);
+    }
+
+    .btn-white:hover {
+      color: var(--near-black);
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 6%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--light-gray);
+      transition: all 0.3s ease;
+    }
+
+    .navbar.transparent {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(5px);
+      border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar.transparent .logo,
+    .navbar.transparent .nav-links a,
+    .navbar.transparent .menu-icon {
+      color: var(--pure-white);
+    }
+
+    .navbar.transparent .nav-links a::after {
+      background: var(--pure-white);
+    }
+
+    .navbar.hidden-nav {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--near-black);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: letter-spacing 0.3s ease;
+    }
+
+    .logo:hover {
+      letter-spacing: 2px;
+    }
+
+    .logo span {
+      font-style: italic;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      color: var(--dark-gray);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--near-black);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--near-black);
+    }
+
+    .menu-icon {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--near-black);
+      transition: transform 0.3s ease;
+    }
+
+    .menu-icon:hover {
+      transform: rotate(90deg);
+    }
+
+    /* Slide 1 - Video Background with Content (Original Hero) */
+    .slide-1 {
+      position: relative;
+    }
+
+    .slide-1::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1;
+    }
+
+    .slide-1 .slide-content {
+      text-align: center;
+      color: var(--pure-white);
+    }
+
+    .slide-1 .badge {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 4px 14px;
+      font-size: 0.65rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .slide-1 h1 {
+      font-size: 4.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .slide-1 p {
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      font-weight: 300;
+    }
+
+    /* Slide 2 - Fullscreen Video Only (No Text, No Overlay) */
+    .slide-2 {
+      position: relative;
+    }
+
+    /* Services Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .service-card {
+      background: var(--pure-white);
+      border: 1px solid var(--light-gray);
+      padding: 2rem;
+      transition: all 0.4s ease;
+      text-align: center;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--mid-gray);
+    }
+
+    .service-card i {
+      font-size: 2.2rem;
+      color: var(--near-black);
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover i {
+      transform: scale(1.1);
+    }
+
+    .service-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .service-card p {
+      color: var(--dark-gray);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    /* Venue Approach */
+    .venue-approach {
+      background: var(--off-white);
+      border: 1px solid var(--light-gray);
+      padding: 3rem;
+      text-align: center;
+    }
+
+    .venue-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .venue-feature {
+      background: var(--pure-white);
+      padding: 1.5rem;
+      border: 1px solid var(--light-gray);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .venue-feature:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .venue-feature i {
+      font-size: 1.8rem;
+      color: var(--near-black);
+      margin-bottom: 1rem;
+    }
+
+    .venue-feature h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .venue-feature p {
+      font-size: 0.8rem;
+      color: var(--dark-gray);
+      font-weight: 300;
+    }
+
+    /* Contact Form */
+    .inquiry-form {
+      max-width: 600px;
+      margin: 2rem auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .inquiry-form input,
+    .inquiry-form textarea {
+      padding: 1rem;
+      border: 1px solid var(--light-gray);
+      background: var(--pure-white);
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .inquiry-form input:focus,
+    .inquiry-form textarea:focus {
+      outline: none;
+      border-color: var(--near-black);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .form-feedback {
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      color: var(--dark-gray);
+    }
+
+    .section-title {
+      font-size: 2.8rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--mid-gray);
+      font-weight: 300;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      cursor: pointer;
+      z-index: 10;
+      color: var(--pure-white);
+    }
+
+    .scroll-indicator span {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+    }
+
+    .scroll-indicator i {
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* Footer */
+    footer {
+      background: var(--near-black);
+      color: var(--mid-gray);
+      padding: 2rem 6%;
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+
+    .social-icons a {
+      color: var(--mid-gray);
+      margin: 0 14px;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .social-icons a:hover {
+      color: var(--pure-white);
+      transform: translateY(-3px);
+    }
+
+    /* Hide scroll indicator on full video slide */
+    .slide-2 .scroll-indicator {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 850px) {
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        background: var(--pure-white);
+        flex-direction: column;
+        width: 70%;
+        height: 100vh;
+        padding: 2rem;
+        gap: 1.8rem;
+        transition: left 0.3s ease;
+        box-shadow: var(--shadow-lg);
+        z-index: 999;
+        border-right: 1px solid var(--light-gray);
+      }
+
+      .navbar.transparent .nav-links {
+        background: rgba(0, 0, 0, 0.9);
+      }
+
+      .nav-links.active {
+        left: 0;
+      }
+
+      .menu-icon {
+        display: block;
+      }
+
+      .slide-1 h1 {
+        font-size: 2.8rem;
+      }
+
+      .section-title {
+        font-size: 2.2rem;
+      }
+
+      .services-grid,
+      .venue-features {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .nav-dots {
+        right: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="logo">Bloom<span>.</span></a>
+  <div class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="venues.html">Venues</a></li>
+    <li><a href="index.html#contact">Inquire</a></li>
+  </ul>
+</nav>
+
+<div class="presentation-container" id="presentationContainer">
+  <!-- Slide 1 - Video Background with Original Hero Content -->
+  <section class="slide slide-1" data-slide-index="0">
+    <video class="bg-video" autoplay loop muted playsinline>
+      <source src="https://player.vimeo.com/external/434045862.sd.mp4?s=c27ecc0c7d63c1bc0e0d7d2d7b2f5c5c5c5c5c5c&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
+    </video>
+    <div class="slide-content">
+      <div class="badge">Bloom Weddings — Bespoke Planning</div>
+      <h1>Bloom into<br>forever</h1>
+      <p>Tailored celebrations, curated venues, and timeless refinement — crafted entirely around your love story.</p>
+      <div class="scroll-indicator" id="scrollIndicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 2 - Fullscreen Video Only (No Text, No Overlay) -->
+  <section class="slide slide-2" data-slide-index="1">
+    <video class="bg-video" autoplay loop muted playsinline>
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-embracing-on-a-hill-at-sunset-40170-large.mp4" type="video/mp4">
+    </video>
+    <!-- No content overlay - pure video experience -->
+  </section>
+
+  <!-- Slide 3 - Services Overview -->
+  <section class="slide" data-slide-index="2" style="background: var(--pure-white);">
+    <div class="slide-content">
+      <h2 class="section-title">Tailored to your vision</h2>
+      <div class="section-sub">We design experiences, source exceptional venues, and orchestrate every detail with precision.</div>
+      <div class="services-grid">
+        <div class="service-card"><i class="far fa-gem"></i><h3>Full Planning</h3><p>Concept development, budget management, vendor curation — every element orchestrated with care.</p></div>
+        <div class="service-card"><i class="fas fa-map-marker-alt"></i><h3>Venue Sourcing</h3><p>From urban landmarks to private estates — we find the perfect setting, anywhere you envision.</p></div>
+        <div class="service-card"><i class="fas fa-snowflake"></i><h3>Design & Styling</h3><p>Cohesive aesthetics, ambient lighting, and refined details that reflect your essence.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 4 - Venue Philosophy -->
+  <section class="slide" data-slide-index="3" style="background: var(--off-white);">
+    <div class="slide-content">
+      <h2 class="section-title">No fixed venues. Only possibilities.</h2>
+      <div class="venue-approach" style="background: var(--pure-white);">
+        <p style="font-size: 1rem; max-width: 700px; margin: 0 auto; line-height: 1.6;">We do not maintain a pre-selected roster of venues — because your wedding deserves a space as distinctive as you are. Whether a private estate, a cultural institution, a mountaintop, or an urban loft, we identify, evaluate, and secure the ideal location based on your preferences, guest count, and season.</p>
+        <div class="venue-features">
+          <div class="venue-feature"><i class="fas fa-globe-americas"></i><h4>Domestic & Global</h4><p>We operate wherever your vision takes you.</p></div>
+          <div class="venue-feature"><i class="fas fa-key"></i><h4>Exclusive Access</h4><p>Private properties and hidden gems.</p></div>
+          <div class="venue-feature"><i class="fas fa-chart-line"></i><h4>Transparent Process</h4><p>No venue commissions — your budget, maximized.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5 - Contact -->
+  <section class="slide" data-slide-index="4" style="background: var(--pure-white);" id="contact">
+    <div class="slide-content">
+      <h2 class="section-title">Begin your bloom</h2>
+      <div class="section-sub">Share your vision — we will curate everything from venues to the final toast.</div>
+      <form class="inquiry-form" id="homeInquiry">
+        <input type="text" placeholder="Full name" id="homeName" required>
+        <input type="email" placeholder="Email address" id="homeEmail" required>
+        <input type="text" placeholder="Preferred season & location">
+        <textarea rows="3" placeholder="Describe your celebration..." id="homeMsg" required></textarea>
+        <button type="submit" class="btn-bloom btn-bloom-solid" style="width: fit-content; margin: 0 auto;">Send inquiry →</button>
+        <div class="form-feedback" id="homeFeedback"></div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="social-icons">
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-pinterest"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+  <p style="margin: 1rem 0 0.5rem;">© 2025 Bloom Weddings — Bespoke Planning & Venue Curation</p>
+  <p style="font-size: 0.65rem;">Every love story deserves its own stage.</p>
+</footer>
+
+<script>
+  const container = document.getElementById('presentationContainer');
+  const slides = document.querySelectorAll('.slide');
+  const navbar = document.getElementById('navbar');
+  const navDotsContainer = document.createElement('div');
+  navDotsContainer.className = 'nav-dots';
+  document.body.appendChild(navDotsContainer);
+
+  let currentSlide = 0;
+  let isScrolling = false;
+
+  // Create navigation dots
+  slides.forEach((_, index) => {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot';
+    if (index === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => {
+      goToSlide(index);
+    });
+    navDotsContainer.appendChild(dot);
+  });
+
+  const dots = document.querySelectorAll('.nav-dot');
+
+  function updateActiveSlide() {
+    const scrollPosition = container.scrollTop;
+    const slideHeight = window.innerHeight;
+    const newSlide = Math.round(scrollPosition / slideHeight);
+    
+    if (newSlide !== currentSlide && !isScrolling) {
+      currentSlide = newSlide;
+      
+      // Update active class on slides
+      slides.forEach((slide, index) => {
+        if (index === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+      
+      // Update dots
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+      
+      // Update navbar visibility
+      if (currentSlide === 1) {
+        // On full video slide, hide navbar completely
+        navbar.classList.add('hidden-nav');
+        navbar.classList.remove('transparent');
+      } else {
+        navbar.classList.remove('hidden-nav');
+        if (currentSlide === 0) {
+          navbar.classList.add('transparent');
+        } else {
+          navbar.classList.remove('transparent');
+        }
+      }
+      
+      // Update nav links active state
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        const slideIndex = link.getAttribute('data-slide');
+        if (slideIndex && parseInt(slideIndex) === currentSlide) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  function goToSlide(index) {
+    if (index >= 0 && index < slides.length) {
+      isScrolling = true;
+      container.scrollTo({
+        top: index * window.innerHeight,
+        behavior: 'smooth'
+      });
+      setTimeout(() => {
+        isScrolling = false;
+      }, 800);
+    }
+  }
+
+  // Scroll event listener
+  container.addEventListener('scroll', () => {
+    requestAnimationFrame(updateActiveSlide);
+  });
+
+  // Initial activation
+  slides[0].classList.add('active');
+  navbar.classList.add('transparent');
+
+  // Scroll indicator click
+  const scrollIndicator = document.getElementById('scrollIndicator');
+  if (scrollIndicator) {
+    scrollIndicator.addEventListener('click', () => {
+      goToSlide(1);
+    });
+  }
+
+  // Mobile menu toggle
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('navLinks');
+  if (toggle) {
+    toggle.addEventListener('click', () => nav.classList.toggle('active'));
+  }
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const slideIndex = link.getAttribute('data-slide');
+      if (slideIndex !== null) {
+        e.preventDefault();
+        goToSlide(parseInt(slideIndex));
+        nav.classList.remove('active');
+      }
+    });
+  });
+
+  // Contact form handler
+  const homeForm = document.getElementById('homeInquiry');
+  if (homeForm) {
+    homeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('homeName').value.trim();
+      const email = document.getElementById('homeEmail').value.trim();
+      const msg = document.getElementById('homeMsg').value.trim();
+      const fb = document.getElementById('homeFeedback');
+      if (name && email && msg) {
+        fb.innerHTML = `Thank you, ${name}. A Bloom curator will respond within 24 hours.`;
+        fb.style.color = "#333333";
+        homeForm.reset();
+        setTimeout(() => fb.innerHTML = "", 5000);
+      } else {
+        fb.innerHTML = "Please complete all fields to begin.";
+        fb.style.color = "#A0A0A0";
+      }
+    });
+  }
+
+  // Resize handler to maintain scroll position
+  window.addEventListener('resize', () => {
+    goToSlide(currentSlide);
+  });
+</script>
+</body>
+</html>
