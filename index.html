@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Bloom | Bespoke Wedding Planning & Venue Curation</title>
   <meta name="description" content="Bloom crafts bespoke luxury weddings anywhere you dream. Full planning, design, and venue curation — tailored entirely to your love story.">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -26,12 +24,13 @@
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
       --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
+      --overlay-dark: rgba(0, 0, 0, 0.55);
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--pure-white);
-      color: var(--near-black);
+      background-color: var(--near-black);
+      color: var(--pure-white);
       overflow-x: hidden;
     }
 
@@ -41,8 +40,27 @@
       letter-spacing: 0.01em;
     }
 
+    /* Fixed Video Background */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .video-background video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* Presentation Scroll Container */
     .presentation-container {
+      position: relative;
+      z-index: 1;
       height: 100vh;
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
@@ -58,60 +76,27 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      overflow: hidden;
     }
 
-    /* Slide Content Container */
-    .slide-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 6%;
-      width: 100%;
+    /* Content Card - Same Size Square on Every Slide */
+    .content-card {
+      max-width: 650px;
+      width: 90%;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 3rem 2.5rem;
+      text-align: center;
       opacity: 0;
       transform: translateY(30px);
       transition: opacity 0.6s ease, transform 0.6s ease;
-      z-index: 2;
+      border-radius: 4px;
+      box-shadow: var(--shadow-lg);
     }
 
-    .slide.active .slide-content {
+    .slide.active .content-card {
       opacity: 1;
       transform: translateY(0);
-    }
-
-    /* Video Background Slides */
-    .video-bg-slide {
-      position: relative;
-    }
-
-    .video-bg-slide::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
-    }
-
-    .bg-video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: translate(-50%, -50%);
-      z-index: 0;
-    }
-
-    /* Full Video Slide (no overlay, no text) */
-    .full-video-slide {
-      position: relative;
-    }
-
-    .full-video-slide .bg-video {
-      z-index: 0;
     }
 
     /* Navigation Dots */
@@ -130,18 +115,18 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--mid-gray);
+      background: rgba(255, 255, 255, 0.5);
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .nav-dot.active {
-      background: var(--near-black);
+      background: var(--pure-white);
       transform: scale(1.5);
     }
 
     .nav-dot:hover {
-      background: var(--near-black);
+      background: var(--pure-white);
       transform: scale(1.2);
     }
 
@@ -149,9 +134,9 @@
     .btn-bloom {
       display: inline-block;
       background: transparent;
-      border: 1px solid var(--near-black);
+      border: 1px solid var(--pure-white);
       padding: 0.9rem 2.2rem;
-      color: var(--near-black);
+      color: var(--pure-white);
       font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -163,6 +148,7 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
+      margin-top: 1rem;
     }
 
     .btn-bloom::before {
@@ -172,7 +158,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: var(--near-black);
+      background: var(--pure-white);
       transition: left 0.3s ease;
       z-index: -1;
     }
@@ -182,36 +168,23 @@
     }
 
     .btn-bloom:hover {
-      color: var(--pure-white);
-      border-color: var(--near-black);
+      color: var(--near-black);
+      border-color: var(--pure-white);
     }
 
     .btn-bloom-solid {
-      background: var(--near-black);
+      background: var(--pure-white);
       border: none;
-      color: var(--pure-white);
-    }
-
-    .btn-bloom-solid:hover {
-      background: var(--dark-gray);
-      transform: translateY(-2px);
+      color: var(--near-black);
     }
 
     .btn-bloom-solid::before {
       display: none;
     }
 
-    .btn-white {
-      border-color: var(--pure-white);
-      color: var(--pure-white);
-    }
-
-    .btn-white::before {
-      background: var(--pure-white);
-    }
-
-    .btn-white:hover {
-      color: var(--near-black);
+    .btn-bloom-solid:hover {
+      background: var(--light-gray);
+      transform: translateY(-2px);
     }
 
     /* Navbar */
@@ -224,40 +197,18 @@
       justify-content: space-between;
       align-items: center;
       padding: 1.2rem 6%;
-      background: rgba(255, 255, 255, 0.98);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
       z-index: 1000;
-      border-bottom: 1px solid var(--light-gray);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       transition: all 0.3s ease;
-    }
-
-    .navbar.transparent {
-      background: rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(5px);
-      border-bottom-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .navbar.transparent .logo,
-    .navbar.transparent .nav-links a,
-    .navbar.transparent .menu-icon {
-      color: var(--pure-white);
-    }
-
-    .navbar.transparent .nav-links a::after {
-      background: var(--pure-white);
-    }
-
-    .navbar.hidden-nav {
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .logo {
       font-family: 'Cormorant Garamond', serif;
       font-size: 2rem;
       font-weight: 600;
-      color: var(--near-black);
+      color: var(--pure-white);
       text-decoration: none;
       letter-spacing: 1px;
       transition: letter-spacing 0.3s ease;
@@ -282,7 +233,7 @@
       font-weight: 500;
       font-size: 0.7rem;
       letter-spacing: 1.5px;
-      color: var(--dark-gray);
+      color: var(--pure-white);
       transition: all 0.3s ease;
       text-transform: uppercase;
       position: relative;
@@ -295,7 +246,7 @@
       left: 0;
       width: 0;
       height: 1px;
-      background: var(--near-black);
+      background: var(--pure-white);
       transition: width 0.3s ease;
     }
 
@@ -306,14 +257,14 @@
 
     .nav-links a:hover,
     .nav-links a.active {
-      color: var(--near-black);
+      color: var(--pure-white);
     }
 
     .menu-icon {
       display: none;
       font-size: 1.5rem;
       cursor: pointer;
-      color: var(--near-black);
+      color: var(--pure-white);
       transition: transform 0.3s ease;
     }
 
@@ -321,191 +272,133 @@
       transform: rotate(90deg);
     }
 
-    /* Slide 1 - Video Background with Content (Original Hero) */
-    .slide-1 {
-      position: relative;
-    }
-
-    .slide-1::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 1;
-    }
-
-    .slide-1 .slide-content {
-      text-align: center;
-      color: var(--pure-white);
-    }
-
-    .slide-1 .badge {
-      background: rgba(0, 0, 0, 0.7);
+    /* Badge */
+    .badge {
+      background: rgba(0, 0, 0, 0.6);
       padding: 4px 14px;
       font-size: 0.65rem;
       display: inline-block;
       margin-bottom: 1rem;
       letter-spacing: 2px;
+      border-radius: 30px;
     }
 
-    .slide-1 h1 {
-      font-size: 4.5rem;
+    /* Slide 1 Specific */
+    .hero-content h1 {
+      font-size: 4rem;
       margin-bottom: 1rem;
     }
 
-    .slide-1 p {
+    .hero-content p {
       font-size: 1rem;
-      max-width: 600px;
-      margin: 0 auto 2rem;
+      max-width: 500px;
+      margin: 0 auto;
       font-weight: 300;
+      line-height: 1.6;
     }
 
-    /* Slide 2 - Fullscreen Video Only (No Text, No Overlay) */
-    .slide-2 {
-      position: relative;
-    }
-
-    /* Services Grid */
+    /* Services Grid inside card */
     .services-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 3rem;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
     }
 
-    .service-card {
-      background: var(--pure-white);
-      border: 1px solid var(--light-gray);
-      padding: 2rem;
-      transition: all 0.4s ease;
+    .service-item {
       text-align: center;
     }
 
-    .service-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--mid-gray);
+    .service-item i {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: var(--pure-white);
     }
 
-    .service-card i {
-      font-size: 2.2rem;
-      color: var(--near-black);
-      margin-bottom: 1rem;
-      transition: transform 0.3s ease;
+    .service-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
     }
 
-    .service-card:hover i {
-      transform: scale(1.1);
-    }
-
-    .service-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.7rem;
-    }
-
-    .service-card p {
-      color: var(--dark-gray);
-      font-size: 0.85rem;
-      line-height: 1.5;
+    .service-item p {
+      font-size: 0.7rem;
       font-weight: 300;
+      line-height: 1.4;
     }
 
-    /* Venue Approach */
-    .venue-approach {
-      background: var(--off-white);
-      border: 1px solid var(--light-gray);
-      padding: 3rem;
-      text-align: center;
-    }
-
+    /* Venue Features Grid */
     .venue-features {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .venue-feature {
-      background: var(--pure-white);
-      padding: 1.5rem;
-      border: 1px solid var(--light-gray);
+      gap: 1.5rem;
+      margin-top: 1.5rem;
       text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .venue-feature:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
     }
 
     .venue-feature i {
-      font-size: 1.8rem;
-      color: var(--near-black);
-      margin-bottom: 1rem;
-    }
-
-    .venue-feature h4 {
-      font-size: 1.1rem;
+      font-size: 1.5rem;
       margin-bottom: 0.5rem;
     }
 
+    .venue-feature h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
     .venue-feature p {
-      font-size: 0.8rem;
-      color: var(--dark-gray);
+      font-size: 0.7rem;
       font-weight: 300;
     }
 
-    /* Contact Form */
+    /* Form inside card */
     .inquiry-form {
-      max-width: 600px;
-      margin: 2rem auto 0;
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      margin-top: 1.5rem;
     }
 
     .inquiry-form input,
     .inquiry-form textarea {
-      padding: 1rem;
-      border: 1px solid var(--light-gray);
-      background: var(--pure-white);
+      padding: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.5);
       font-family: 'Montserrat', sans-serif;
       transition: all 0.3s ease;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--pure-white);
+    }
+
+    .inquiry-form input::placeholder,
+    .inquiry-form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.6);
     }
 
     .inquiry-form input:focus,
     .inquiry-form textarea:focus {
       outline: none;
-      border-color: var(--near-black);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
+      border-color: var(--pure-white);
+      background: rgba(0, 0, 0, 0.7);
     }
 
     .form-feedback {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       margin-top: 0.5rem;
-      color: var(--dark-gray);
+      color: var(--light-gray);
     }
 
     .section-title {
-      font-size: 2.8rem;
-      text-align: center;
+      font-size: 2rem;
       margin-bottom: 0.5rem;
     }
 
     .section-sub {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: var(--mid-gray);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      color: rgba(255, 255, 255, 0.7);
       font-weight: 300;
-      max-width: 650px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     /* Scroll Indicator */
@@ -539,54 +432,21 @@
       50% { transform: translateY(8px); }
     }
 
-    /* Footer */
-    footer {
-      background: var(--near-black);
-      color: var(--mid-gray);
-      padding: 2rem 6%;
-      text-align: center;
-      font-size: 0.7rem;
-      letter-spacing: 0.5px;
-    }
-
-    .social-icons a {
-      color: var(--mid-gray);
-      margin: 0 14px;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-      display: inline-block;
-    }
-
-    .social-icons a:hover {
-      color: var(--pure-white);
-      transform: translateY(-3px);
-    }
-
-    /* Hide scroll indicator on full video slide */
-    .slide-2 .scroll-indicator {
-      display: none;
-    }
-
     /* Responsive */
     @media (max-width: 850px) {
       .nav-links {
         position: fixed;
         top: 70px;
         left: -100%;
-        background: var(--pure-white);
+        background: rgba(0, 0, 0, 0.95);
         flex-direction: column;
         width: 70%;
         height: 100vh;
         padding: 2rem;
         gap: 1.8rem;
         transition: left 0.3s ease;
-        box-shadow: var(--shadow-lg);
         z-index: 999;
-        border-right: 1px solid var(--light-gray);
-      }
-
-      .navbar.transparent .nav-links {
-        background: rgba(0, 0, 0, 0.9);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
       }
 
       .nav-links.active {
@@ -597,12 +457,12 @@
         display: block;
       }
 
-      .slide-1 h1 {
-        font-size: 2.8rem;
+      .hero-content h1 {
+        font-size: 2.5rem;
       }
 
       .section-title {
-        font-size: 2.2rem;
+        font-size: 1.6rem;
       }
 
       .services-grid,
@@ -614,10 +474,22 @@
       .nav-dots {
         right: 15px;
       }
+
+      .content-card {
+        padding: 2rem 1.5rem;
+        width: 85%;
+      }
     }
   </style>
 </head>
 <body>
+
+<!-- Fixed Video Background -->
+<div class="video-background">
+  <video autoplay loop muted playsinline>
+    <source src="wedding11.mp4" type="video/mp4">
+  </video>
+</div>
 
 <nav class="navbar">
   <a href="index.html" class="logo">Bloom<span>.</span></a>
@@ -626,65 +498,77 @@
     <li><a href="index.html" class="active">Home</a></li>
     <li><a href="services.html">Services</a></li>
     <li><a href="venues.html">Venues</a></li>
-    <li><a href="index.html#contact">Inquire</a></li>
+    <li><a href="#contact" id="contactNavLink">Inquire</a></li>
   </ul>
 </nav>
 
 <div class="presentation-container" id="presentationContainer">
-  <!-- Slide 1 - Video Background with Original Hero Content -->
-  <section class="slide slide-1" data-slide-index="0">
-    <video class="bg-video" autoplay loop muted playsinline>
-      <source src="wedding1.mp4" type="video/mp4">
-    </video>
-    <div class="slide-content">
+  <!-- Slide 1 - Hero -->
+  <section class="slide" data-slide-index="0">
+    <div class="content-card hero-content">
       <div class="badge">Bloom Weddings — Bespoke Planning</div>
       <h1>Bloom into<br>forever</h1>
       <p>Tailored celebrations, curated venues, and timeless refinement — crafted entirely around your love story.</p>
       <div class="scroll-indicator" id="scrollIndicator">
+        <span>SCROLL</span>
         <i class="fas fa-chevron-down"></i>
       </div>
     </div>
   </section>
 
-  <!-- Slide 2 - Fullscreen Video Only (No Text, No Overlay) -->
-  <section class="slide slide-2" data-slide-index="1">
-    <video class="bg-video" autoplay loop muted playsinline>
-      <source src="wedding11.mp4" type="video/mp4">
-    </video>
-    <!-- No content overlay - pure video experience -->
-  </section>
-
-  <!-- Slide 3 - Services Overview -->
-  <section class="slide" data-slide-index="2" style="background: var(--pure-white);">
-    <div class="slide-content">
+  <!-- Slide 2 - Services -->
+  <section class="slide" data-slide-index="1">
+    <div class="content-card">
       <h2 class="section-title">Tailored to your vision</h2>
       <div class="section-sub">We design experiences, source exceptional venues, and orchestrate every detail with precision.</div>
       <div class="services-grid">
-        <div class="service-card"><i class="far fa-gem"></i><h3>Full Planning</h3><p>Concept development, budget management, vendor curation — every element orchestrated with care.</p></div>
-        <div class="service-card"><i class="fas fa-map-marker-alt"></i><h3>Venue Sourcing</h3><p>From urban landmarks to private estates — we find the perfect setting, anywhere you envision.</p></div>
-        <div class="service-card"><i class="fas fa-snowflake"></i><h3>Design & Styling</h3><p>Cohesive aesthetics, ambient lighting, and refined details that reflect your essence.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Slide 4 - Venue Philosophy -->
-  <section class="slide" data-slide-index="3" style="background: var(--off-white);">
-    <div class="slide-content">
-      <h2 class="section-title">No fixed venues. Only possibilities.</h2>
-      <div class="venue-approach" style="background: var(--pure-white);">
-        <p style="font-size: 1rem; max-width: 700px; margin: 0 auto; line-height: 1.6;">We do not maintain a pre-selected roster of venues — because your wedding deserves a space as distinctive as you are. Whether a private estate, a cultural institution, a mountaintop, or an urban loft, we identify, evaluate, and secure the ideal location based on your preferences, guest count, and season.</p>
-        <div class="venue-features">
-          <div class="venue-feature"><i class="fas fa-globe-americas"></i><h4>Domestic & Global</h4><p>We operate wherever your vision takes you.</p></div>
-          <div class="venue-feature"><i class="fas fa-key"></i><h4>Exclusive Access</h4><p>Private properties and hidden gems.</p></div>
-          <div class="venue-feature"><i class="fas fa-chart-line"></i><h4>Transparent Process</h4><p>No venue commissions — your budget, maximized.</p></div>
+        <div class="service-item">
+          <i class="far fa-gem"></i>
+          <h3>Full Planning</h3>
+          <p>Concept development, budget management, vendor curation.</p>
+        </div>
+        <div class="service-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <h3>Venue Sourcing</h3>
+          <p>From urban landmarks to private estates — we find the perfect setting.</p>
+        </div>
+        <div class="service-item">
+          <i class="fas fa-snowflake"></i>
+          <h3>Design & Styling</h3>
+          <p>Cohesive aesthetics, ambient lighting, and refined details.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Slide 5 - Contact -->
-  <section class="slide" data-slide-index="4" style="background: var(--pure-white);" id="contact">
-    <div class="slide-content">
+  <!-- Slide 3 - Venue Philosophy -->
+  <section class="slide" data-slide-index="2">
+    <div class="content-card">
+      <h2 class="section-title">No fixed venues</h2>
+      <div class="section-sub">Only possibilities — because your wedding deserves a space as distinctive as you are.</div>
+      <div class="venue-features">
+        <div class="venue-feature">
+          <i class="fas fa-globe-americas"></i>
+          <h4>Domestic & Global</h4>
+          <p>We operate wherever your vision takes you.</p>
+        </div>
+        <div class="venue-feature">
+          <i class="fas fa-key"></i>
+          <h4>Exclusive Access</h4>
+          <p>Private properties and hidden gems.</p>
+        </div>
+        <div class="venue-feature">
+          <i class="fas fa-chart-line"></i>
+          <h4>Transparent Process</h4>
+          <p>No venue commissions — your budget, maximized.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 4 - Contact -->
+  <section class="slide" data-slide-index="3" id="contact">
+    <div class="content-card">
       <h2 class="section-title">Begin your bloom</h2>
       <div class="section-sub">Share your vision — we will curate everything from venues to the final toast.</div>
       <form class="inquiry-form" id="homeInquiry">
@@ -699,20 +583,9 @@
   </section>
 </div>
 
-<footer>
-  <div class="social-icons">
-    <a href="#"><i class="fab fa-instagram"></i></a>
-    <a href="#"><i class="fab fa-pinterest"></i></a>
-    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-  </div>
-  <p style="margin: 1rem 0 0.5rem;">© 2025 Bloom Weddings — Bespoke Planning & Venue Curation</p>
-  <p style="font-size: 0.65rem;">Every love story deserves its own stage.</p>
-</footer>
-
 <script>
   const container = document.getElementById('presentationContainer');
   const slides = document.querySelectorAll('.slide');
-  const navbar = document.getElementById('navbar');
   const navDotsContainer = document.createElement('div');
   navDotsContainer.className = 'nav-dots';
   document.body.appendChild(navDotsContainer);
@@ -758,30 +631,6 @@
           dot.classList.remove('active');
         }
       });
-      
-      // Update navbar visibility
-      if (currentSlide === 1) {
-        // On full video slide, hide navbar completely
-        navbar.classList.add('hidden-nav');
-        navbar.classList.remove('transparent');
-      } else {
-        navbar.classList.remove('hidden-nav');
-        if (currentSlide === 0) {
-          navbar.classList.add('transparent');
-        } else {
-          navbar.classList.remove('transparent');
-        }
-      }
-      
-      // Update nav links active state
-      document.querySelectorAll('.nav-links a').forEach(link => {
-        const slideIndex = link.getAttribute('data-slide');
-        if (slideIndex && parseInt(slideIndex) === currentSlide) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
-      });
     }
   }
 
@@ -798,16 +647,12 @@
     }
   }
 
-  // Scroll event listener
   container.addEventListener('scroll', () => {
     requestAnimationFrame(updateActiveSlide);
   });
 
-  // Initial activation
   slides[0].classList.add('active');
-  navbar.classList.add('transparent');
 
-  // Scroll indicator click
   const scrollIndicator = document.getElementById('scrollIndicator');
   if (scrollIndicator) {
     scrollIndicator.addEventListener('click', () => {
@@ -815,24 +660,24 @@
     });
   }
 
-  // Mobile menu toggle
   const toggle = document.getElementById('menuToggle');
   const nav = document.getElementById('navLinks');
   if (toggle) {
     toggle.addEventListener('click', () => nav.classList.toggle('active'));
   }
   document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const slideIndex = link.getAttribute('data-slide');
-      if (slideIndex !== null) {
-        e.preventDefault();
-        goToSlide(parseInt(slideIndex));
-        nav.classList.remove('active');
-      }
-    });
+    link.addEventListener('click', () => nav.classList.remove('active'));
   });
 
-  // Contact form handler
+  const contactLink = document.getElementById('contactNavLink');
+  if (contactLink) {
+    contactLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      goToSlide(3);
+      nav.classList.remove('active');
+    });
+  }
+
   const homeForm = document.getElementById('homeInquiry');
   if (homeForm) {
     homeForm.addEventListener('submit', (e) => {
@@ -843,7 +688,7 @@
       const fb = document.getElementById('homeFeedback');
       if (name && email && msg) {
         fb.innerHTML = `Thank you, ${name}. A Bloom curator will respond within 24 hours.`;
-        fb.style.color = "#333333";
+        fb.style.color = "#CCCCCC";
         homeForm.reset();
         setTimeout(() => fb.innerHTML = "", 5000);
       } else {
@@ -853,7 +698,6 @@
     });
   }
 
-  // Resize handler to maintain scroll position
   window.addEventListener('resize', () => {
     goToSlide(currentSlide);
   });
